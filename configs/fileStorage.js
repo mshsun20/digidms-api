@@ -5,9 +5,9 @@ import archiver from "archiver";
 import File from "../models/fileModel.js";
 import mongoose from "mongoose";
 
-const appenv = process.env.APP_ENV || 'quality';
-// const env = process.env.NODE_ENV || 'dev';
+const apienv = process.env.APP_ENV || 'development';
 const apiUrl = {
+    development: process.env.API_DEV,
     quality: process.env.API_QAS,
     production: process.env.API_PRD
 }
@@ -70,7 +70,7 @@ export const uploadFile = async (buffer, originalname, mimetype) => {
 
         const filename = `${Date.now()}_${safeName}`;
         const filePath = path.join(docDir, filename);
-        const fileRelativePath = `${apiUrl[appenv]}/uploads/${filename}`;
+        const fileRelativePath = `${apiUrl[apienv]}/uploads/${filename}`;
 
         await fs.promises.writeFile(filePath, buffer);
 

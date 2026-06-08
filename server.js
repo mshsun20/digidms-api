@@ -3,41 +3,38 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import mongoConn from "./db/dbcon.js";
+// import mongoConn from "./db/dbcon.js";
 import authRoutes from "./routes/authRoute.js";
 import routes from "./routes/route.js";
 dotenv.config({ quiet: true });
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
 const app = express();
-const apienv = process.env.NODE_ENV || 'dev';
-const appenv = process.env.APP_ENV || 'quality';
+const apienv = process.env.NODE_ENV || 'development';
 
 const portDetails = {
-  quality: process.env.PORT_QAS || 5039,
-  production: process.env.PORT_PRD || 5038,
+  development: process.env.PORT_DEV || 5052,
+  quality: process.env.PORT_QAS || 5051,
+  production: process.env.PORT_PRD || 5050,
 }
-const port = portDetails[appenv] || 5039;
+const port = portDetails[apienv] || 5052;
 
 const allowedOrigins = {
-  dev: {
-    quality: [process.env.APP_URL_DEVQ],
-    production: [process.env.APP_URL_DEVP]
-  },
-  live: {
-    quality: [process.env.APP_URL_LIVQ],
-    production: [process.env.APP_URL_LIVP]
-  }
+  development: [process.env.APP_URL_DEV],
+  quality: [process.env.APP_URL_QAS],
+  production: [process.env.APP_URL_PRD]
 }
-const origins = allowedOrigins[apienv][appenv] || ['http://localhost:3039'];
+const origins = allowedOrigins[apienv] || ['http://localhost:3039'];
 
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 // ✅ connect DB ONCE (safe for serverless)
-await mongoConn();
+// await mongoConn();
 
 app.use(express.json({ limit: '10000mb' }));
 app.use(express.urlencoded({ limit: '10000mb', extended: true }));
@@ -51,15 +48,10 @@ app.use(cors({
 }));
 app.use(bodyParser.json({ limit: '10000mb' }));
 app.use(bodyParser.urlencoded({ limit: '10000mb', extended: true }));
-app.use(express.static('uploads'));
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api", routes);
-
-// test route
-// app.get("/", (req, res) => {
-//   res.json({ message: "API working on Vercel" });
-// });
 
 export default app;

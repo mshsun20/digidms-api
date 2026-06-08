@@ -4,17 +4,27 @@ import mongoose from 'mongoose';
 
 const dbUrlConn = process.env.ONLN_DBURL
 // const dbUrlConn = process.env.OFFLN_DBURL
-const appenv = process.env.APP_ENV || 'quality';
-const env = process.env.NODE_ENV || 'dev';
+const apienv = process.env.NODE_ENV || 'development';
 
-const dbUrl = appenv === 'production'
-    ? (env === 'live' ? (console.log('Live (Production Server)'), `${dbUrlConn}digitcomplianceprddb?appName=digitcomplianceapp`) : (console.log('Dev (Production Server)'), `${dbUrlConn}digitcompliancedb?appName=digitcomplianceapp`))
-    : (env === 'live' ? (console.log('Live (Quality Server)'), `${dbUrlConn}digitcomplianceqasdb?appName=digitcomplianceapp`) : (console.log('Dev (Quality Server)'), `${dbUrlConn}digitcompliancedb?appName=digitcomplianceapp`));
+let dbUrl='', dbnm=''
 
-const dbnm = appenv === 'production'
-    ? (env === 'live' ? (console.log('Live (Production Server)'), 'digitcomplianceprddb') : (console.log('Dev (Production Server)'), 'digitcompliancedb'))
-    : (env === 'live' ? (console.log('Live (Quality Server)'), 'digitcomplianceqasdb') : (console.log('Dev (Quality Server)'), 'digitcompliancedb'));
-
+switch (apienv) {
+    case "development":
+        console.log("Development Server");
+        dbUrl = `${dbUrlConn}digitcompliancedb?appName=digitcomplianceapp`;
+        dbnm = 'digitcompliancedb';
+        break;
+    case "quality":
+        console.log("Quality Server");
+        dbUrl = `${dbUrlConn}digitcomplianceqasdb?appName=digitcomplianceapp`;
+        dbnm = 'digitcomplianceqasdb';
+        break;
+    case "production":
+        console.log("Production Server");
+        dbUrl = `${dbUrlConn}digitcomplianceprddb?appName=digitcomplianceapp`
+        dbnm = 'digitcomplianceprddb';
+        break;
+}
 
 mongoose.set('strictQuery', false); // Disable strict query mode
 
