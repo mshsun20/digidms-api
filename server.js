@@ -51,6 +51,12 @@ app.use(bodyParser.urlencoded({ limit: '10000mb', extended: true }));
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'API Server Running'
+  });
+});
 app.use("/api/auth", authRoutes);
 app.use("/api", routes);
 
