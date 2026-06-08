@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
     message: 'API Server Running'
   });
 });
-app.use("/api/auth", authRoutes);
-app.use("/api", routes);
+app.use("/auth", authRoutes);
+app.use("/", routes);
 
 export default app;
