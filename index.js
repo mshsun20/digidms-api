@@ -1,5 +1,5 @@
-import app from "../app.js";
-import mongoConn from "../db/dbcon.js";
+import app from "./app.js";
+import mongoConn from "./db/dbcon.js";
 
 let isConnected = false;
 
