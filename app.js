@@ -33,9 +33,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-// ✅ connect DB ONCE (safe for serverless)
-// await mongoConn();
-
 app.use(express.json({ limit: '10000mb' }));
 app.use(express.urlencoded({ limit: '10000mb', extended: true }));
 app.use(cookieParser());

@@ -28,17 +28,40 @@ switch (apienv) {
 
 mongoose.set('strictQuery', false); // Disable strict query mode
 
+let cached = global.mongoose;
+if (!cached) {
+    cached = global.mongoose = {
+        conn: null,
+        promise: null
+    }
+}
+
 const mongoConn = async () => {
     try {
-        await mongoose.connect(dbUrl, {
-            dbName: dbnm,
-            retryWrites: true,
-            w: 'majority',
-            ssl: true,
-            maxPoolSize: 1, // Keep per-worker connections low
-            minPoolSize: 1
-        });
-        console.log(`Worker ${process.pid}: DB Successfully Connected...`);
+        if (cached.conn) {
+            return cached.conn
+        }
+        if (!cached.promise) {
+            cached.promise = mongoose.connect(dbUrl, {
+                dbName: dbnm,
+                retryWrites: true,
+                w: 'majority',
+                ssl: true,
+                bufferCommands: false
+            });
+        }
+
+        cached.conn = await cached.promise;
+        return cached.conn
+        // await mongoose.connect(dbUrl, {
+        //     dbName: dbnm,
+        //     retryWrites: true,
+        //     w: 'majority',
+        //     ssl: true,
+        //     maxPoolSize: 1, // Keep per-worker connections low
+        //     minPoolSize: 1
+        // });
+        // console.log(`Worker ${process.pid}: DB Successfully Connected...`);
     } catch (error) {
         console.error(error);
         throw new Error('Database connection failed');
