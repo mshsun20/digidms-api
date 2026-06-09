@@ -9,9 +9,6 @@
   "license": "ISC",
   "author": "Shiv",
   "type": "module",
-  "engines": {
-    "node": "22.x"
-  },
   "main": "index.js",
   "scripts": {
     "start": "node api/index.js",
