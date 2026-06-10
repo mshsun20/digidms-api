@@ -50,10 +50,16 @@ app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 // routes
 app.get('/', (req, res) => {
   res.status(200).json({
+    message: 'API Server Running',
     success: true,
-    message: 'API Server Running'
   });
 });
+app.get('/ping', (req, res) => {
+  res.status(200).json({
+    message: "Backend is Live...",
+    success: true,
+  })
+})
 app.use("/api/auth", authRoutes);
 app.use("/api", routes);
 
